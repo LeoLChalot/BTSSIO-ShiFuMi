@@ -2,19 +2,20 @@ const arrayOrdi = ["pierre", "feuille", "ciseaux"];
 const resultat = document.getElementById("resultat");
 const displayJoueur = document.getElementById("choix-joueur");
 const displayOrdi = document.getElementById("choix-ordi");
-let scoreJoueur = 0;
-let scoreOrdi = 0;
 let gagnant = document.getElementById("gagnant");
 const btnJouer = document.getElementById("btn-jouer");
 const choix = document.getElementById("choix");
+let scoreJoueur = 0;
+let scoreOrdi = 0;
 let choixJoueur;
-let choixOrdi = ordiRandom();
+let intervalOrdi = setInterval(ordiRandom, 200);
+console.log(intervalOrdi);
 
 choix.addEventListener("click", joueurChoix);
 btnJouer.addEventListener("click", resultatManche);
 
 function erase(element1, element2, element3) {
-	if ((typeof element2 == 'undefined') && (typeof element3 == 'undefined')) {
+	if (typeof element2 == "undefined" && typeof element3 == "undefined") {
 		setTimeout(() => {
 			element1.textContent = "";
 		}, 2000);
@@ -30,16 +31,24 @@ function erase(element1, element2, element3) {
 		}, 2000);
 	}
 }
+
 function ordiRandom() {
-	return arrayOrdi[Math.floor(Math.random() * arrayOrdi.length)];
+	let i = arrayOrdi[Math.floor(Math.random() * arrayOrdi.length)];
+	// console.log('ft ordiRandom (i) | ' + i);
+	choixOrdi = i;
+	console.log('ft ordiRandom (choixOrdi) | ' + choixOrdi);
 }
+
 function joueurChoix(event) {
 	let target = event.target.className;
 	displayJoueur.textContent = target;
 	choixJoueur = target;
 	displayOrdi.textContent = "";
 }
+
 function resultatManche() {
+	clearInterval(intervalOrdi);
+	console.log('ft resultatManche (choixOdi) | ' + choixOrdi);
 	displayOrdi.textContent = choixOrdi;
 	if (choixJoueur == undefined) {
 		console.error("Pas de choix");
@@ -68,7 +77,7 @@ function resultatManche() {
 			resultat.textContent = "Perdu !";
 			scoreOrdi++;
 		}
-		erase(resultat, displayOrdi, displayJoueur);
+		// erase(resultat, displayOrdi, displayJoueur);
 
 		if (scoreJoueur == 5) {
 			gagnant.textContent = "Le joueur à gagné !";
@@ -83,5 +92,7 @@ function resultatManche() {
 		setTimeout(erase(gagnant), 5000);
 		document.getElementById("score-joueur").textContent = scoreJoueur;
 		document.getElementById("score-ordi").textContent = scoreOrdi;
+		intervalOrdi = setInterval(ordiRandom, 200);
+		choixJoueur = undefined;
 	}
 }
